@@ -1,2 +1,2 @@
 # application
-Create an application 
+Let's create an application.
