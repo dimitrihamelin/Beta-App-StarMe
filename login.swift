@@ -8,6 +8,7 @@ struct ContentView: View {
     @State private var wrongPassword: CGFloat = 0
     @State private var showingLoginScreen = false
     @State private var errorMessage: String?
+    @State private var authToken: String?
 
     var body: some View {
         NavigationView {
@@ -98,6 +99,13 @@ struct ContentView: View {
             }
             .navigationBarHidden(true)
         }
+        .onAppear {
+            // Check if the user is already authenticated (e.g., by checking saved token)
+            if let savedToken = UserDefaults.standard.string(forKey: "authToken") {
+                authToken = savedToken
+                showingLoginScreen = true
+            }
+        }
     }
 
     func authenticateUser(username: String, password: String) {
@@ -116,17 +124,12 @@ struct ContentView: View {
             return
         }
 
-        if username.lowercased() == "mario2021" {
-            if password.lowercased() == "abc123" {
-                showingLoginScreen = true
-            } else {
-                wrongPassword = 2
-                errorMessage = "Incorrect password"
-            }
-        } else {
-            wrongUsername = 2
-            errorMessage = "User not found"
-        }
+        // Simulating successful authentication
+        authToken = "simulatedAuthToken"
+        showingLoginScreen = true
+
+        // Save the token (you would typically save this securely)
+        UserDefaults.standard.set(authToken, forKey: "authToken")
     }
 
     private func hideKeyboard() {
