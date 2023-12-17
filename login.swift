@@ -87,9 +87,9 @@ struct ContentView: View {
                 }
                 .ignoresSafeArea(.keyboard)
 
-                // Ajout du texte "Alpha v0.4" en bas à droite
+                // Ajout du texte "Alpha v1.1" en bas à droite
                 .overlay(
-                    Text("Alpha v0.4")
+                    Text("Alpha v1.1")
                         .foregroundColor(.white)
                         .padding()
                         .offset(x: 130, y: 360)
