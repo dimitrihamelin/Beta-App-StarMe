@@ -2,7 +2,7 @@
 
 Let's create an application.
 
-Issue Problem : `login.swift`.
+Issue Problem : `login.swift` (Resolved).
 
 # App Under Development 🚀 - Crafting Your Mobile Experience
 
