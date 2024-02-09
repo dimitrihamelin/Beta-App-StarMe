@@ -1,0 +1,89 @@
+struct PublicationView: View {
+    var publication: Publication
+    @ObservedObject var viewModel: PublicationsViewModel
+    @State private var isLiked: Bool
+    @State private var likesCount: Int
+    @State private var isImageFullScreen = false // Contrôle l'affichage de l'image en plein écran
+
+    init(publication: Publication, viewModel: PublicationsViewModel) {
+        self.publication = publication
+        self.viewModel = viewModel
+        
+        let likedPublications = UserDefaults.standard.stringArray(forKey: "likedPublications") ?? []
+        _isLiked = State(initialValue: likedPublications.contains(publication.id))
+        _likesCount = State(initialValue: Int(publication.likes) ?? 0)
+    }
+
+    var body: some View {
+        ZStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 10) {
+                // Image de la publication
+                AsyncImage(url: URL(string: publication.image_path)) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image.resizable()
+                            .aspectRatio(contentMode: isImageFullScreen ? .fit : .fill)
+                            .onTapGesture {
+                                withAnimation(.spring()) {
+                                    isImageFullScreen.toggle()
+                                }
+                            }
+                    case .failure(_):
+                        Text("Impossible de charger l'image")
+                    case .empty:
+                        ProgressView()
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .frame(width: isImageFullScreen ? UIScreen.main.bounds.width : UIScreen.main.bounds.width - 40, height: isImageFullScreen ? UIScreen.main.bounds.height / 2 : 300)
+                .clipped()
+                .cornerRadius(isImageFullScreen ? 0 : 10)
+                .shadow(radius: isImageFullScreen ? 0 : 5)
+                .zIndex(isImageFullScreen ? 1 : 0) // S'assure que l'image agrandie est au-dessus des autres éléments
+                
+                if !isImageFullScreen {
+                    // Contenu de la publication
+                    Text(publication.titre)
+                        .font(.headline)
+                        .lineLimit(1)
+                    
+                    Text(publication.description)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(2)
+                    
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            isLiked.toggle()
+                            likesCount += isLiked ? 1 : -1
+                            viewModel.saveLike(publicationId: publication.id, isLiked: isLiked)
+                        }) {
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .font(.title)
+                                .foregroundColor(isLiked ? .red : .gray)
+                        }
+                        Text("\(likesCount)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .padding(.bottom, isImageFullScreen ? 0 : 20)
+            .background(Color.white)
+            .cornerRadius(10)
+            .padding(10)
+            .shadow(radius: 5)
+            .padding([.horizontal, .bottom], isImageFullScreen ? 0 : 20)
+            .onTapGesture {
+                if isImageFullScreen {
+                    withAnimation(.spring()) {
+                        isImageFullScreen.toggle()
+                    }
+                }
+            }
+        }
+        .edgesIgnoringSafeArea(isImageFullScreen ? .all : .init())
+    }
+}
