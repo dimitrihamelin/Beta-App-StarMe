@@ -1,9 +1,9 @@
 <?php
 // Paramètres de connexion à la base de données
-$servername = "localhost:3306";
-$username = "pdyfwoyt_userbdd"; // Remplacez par votre nom d'utilisateur pour la BDD
-$password = "G.vHZv^hQ=v%"; // Remplacez par votre mot de passe pour la BDD
-$dbname = "pdyfwoyt_bddsite"; // Remplacez par le nom de votre base de données
+$servername = "";
+$username = ""; // Remplacez par votre nom d'utilisateur pour la BDD
+$password = ""; // Remplacez par votre mot de passe pour la BDD
+$dbname = ""; // Remplacez par le nom de votre base de données
 
 // Création de la connexion
 $conn = new mysqli($servername, $username, $password, $dbname);
